@@ -381,6 +381,7 @@ def _run_bounded(
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         start_new_session=(os.name == "posix"),
+        shell=False,
     )
     assert process.stdout is not None
     assert process.stderr is not None

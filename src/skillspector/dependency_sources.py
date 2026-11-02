@@ -21,6 +21,9 @@ import xml.etree.ElementTree as ET
 from dataclasses import dataclass, field
 from pathlib import PurePosixPath
 
+import defusedxml.ElementTree as DefusedET
+from defusedxml.common import DefusedXmlException
+
 from skillspector.inspection_ledger import MAX_FINDING_OUTPUT_RECORDS, LedgerReason
 from skillspector.logging_config import get_logger
 from skillspector.models import Finding
@@ -1381,8 +1384,8 @@ def _parse_maven(
 ) -> None:
     scan.check()
     try:
-        root = ET.fromstring(content)
-    except ET.ParseError:
+        root = DefusedET.fromstring(content, forbid_dtd=True)
+    except (ET.ParseError, DefusedXmlException):
         return
 
     def local_name(tag: str) -> str:

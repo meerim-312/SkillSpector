@@ -256,7 +256,12 @@ def test_node_reports_expired_workflow_deadline_without_losing_previous_findings
     [
         ("pyproject.toml", "tomllib", "loads", {}),
         (".cargo/config.toml", "tomllib", "loads", {}),
-        ("settings.xml", "ET", "fromstring", dependency_sources.ET.fromstring("<settings/>")),
+        (
+            "settings.xml",
+            "DefusedET",
+            "fromstring",
+            dependency_sources.ET.fromstring("<settings/>"),
+        ),
     ],
 )
 def test_whole_document_parse_expiration_is_partial_even_without_sources(
@@ -265,7 +270,7 @@ def test_whole_document_parse_expiration_is_partial_even_without_sources(
     clock = SimpleNamespace(now=0.0)
     monkeypatch.setattr(dependency_sources, "time", SimpleNamespace(monotonic=lambda: clock.now))
 
-    def slow_parse(_content):
+    def slow_parse(_content, *_args, **_kwargs):
         clock.now = 0.5
         return parsed
 
